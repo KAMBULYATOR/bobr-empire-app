@@ -27,12 +27,17 @@
 
         /* Навигация */
         .nav-tabs {
-            display: flex;
-            background: var(--card);
-            padding: 10px;
-            border-bottom: 1px solid #333;
-            justify-content: space-around;
-        }
+    display: flex;
+    background: var(--card);
+    /* Добавляем отступ сверху специально для интерфейса Telegram */
+    padding: 45px 10px 10px 10px; 
+    border-bottom: 1px solid #333;
+    justify-content: space-around;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
         .tab-btn {
             background: none;
             border: none;
