@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bobr Empire</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root { --tg-theme-bg: #1a1a1b; --gold: #f1c40f; --orange: #e67e22; }
+        body { font-family: -apple-system, system-ui, sans-serif; background-color: var(--tg-theme-bg); color: white; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow: hidden; }
+        .app-container { width: 100%; max-width: 400px; padding: 20px; box-sizing: border-box; text-align: center; }
+        .user-card { background: #252526; border-radius: 20px; padding: 20px; border: 1px solid #333; margin-bottom: 30px; }
+        .balance { font-size: 42px; font-weight: 800; color: var(--gold); margin: 10px 0; }
+        .click-area { margin: 50px 0; }
+        .main-btn { width: 200px; height: 200px; border-radius: 50%; border: none; background: radial-gradient(circle, #e67e22, #d35400); font-size: 80px; cursor: pointer; box-shadow: 0 0 30px rgba(230,126,34,0.3); transition: transform 0.05s; }
+        .main-btn:active { transform: scale(0.92); }
+        .shop-btn { background: #27ae60; color: white; border: none; padding: 12px 25px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="user-card">
+            <div id="u-name" style="font-size: 18px; opacity: 0.8;">Загрузка...</div>
+            <div class="balance"><span id="c-count">0</span> 🦫</div>
+            <div id="u-role" style="color: #3498db; font-size: 14px; text-transform: uppercase;">Новичок</div>
+        </div>
+
+        <div class="click-area">
+            <button class="main-btn" onclick="mine()">🪵</button>
+        </div>
+
+        <button class="shop-btn" onclick="buyRole()">КУПИТЬ ПОВЫШЕНИЕ (500 🦫)</button>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        let coins = parseFloat(localStorage.getItem('bobr_v2_coins')) || 0;
+        let role = localStorage.getItem('bobr_v2_role') || 'Новичок';
+
+        function update() {
+            document.getElementById('c-count').innerText = Math.floor(coins);
+            document.getElementById('u-role').innerText = role;
+            if (tg.initDataUnsafe.user) {
+                document.getElementById('u-name').innerText = tg.initDataUnsafe.user.first_name;
+            }
+        }
+
+        function mine() {
+            coins += 1;
+            save();
+            update();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        function buyRole() {
+            if (coins >= 500) {
+                coins -= 500;
+                role = 'Мастер Плотин';
+                save();
+                update();
+                tg.showAlert("Успешно! Теперь ты Мастер.");
+            } else {
+                tg.showAlert("Мало бобро-коинов!");
+            }
+        }
+
+        function save() {
+            localStorage.setItem('bobr_v2_coins', coins);
+            localStorage.setItem('bobr_v2_role', role);
+        }
+
+        update();
+    </script>
+</body>
+</html>
