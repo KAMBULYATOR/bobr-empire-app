@@ -3,203 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bobr Empire Premium</title>
+    <title>Bobr Empire Ultimate</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg: #000;
-            --card: #1c1c1e;
-            --accent: #e67e22;
-            --gold: #f1c40f;
-            --green: #2ecc71;
-            --text-main: #ffffff;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* ЭКРАН ПРИВЕТСТВИЯ И КАПЧА */
-        #auth-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-        .captcha-box {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid #333;
-            margin-top: 20px;
-        }
-        .captcha-btns { display: flex; gap: 15px; margin-top: 15px; }
-        .captcha-btn { 
-            font-size: 30px; background: #2c2c2e; border: none; 
-            padding: 10px; border-radius: 12px; cursor: pointer; 
-        }
-
-        /* НИЖНЯЯ НАВИГАЦИЯ */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; width: 100%;
-            background: var(--card);
-            display: flex;
-            justify-content: space-around;
-            padding: 15px 0 30px 0;
-            border-top: 1px solid #333;
-            z-index: 100;
-        }
-        .nav-item {
-            background: none; border: none; color: #8e8e93;
-            font-size: 12px; font-weight: bold; text-transform: uppercase;
-        }
+        :root { --bg: #0b0b0b; --card: #161618; --accent: #e67e22; --gold: #f1c40f; --text-sub: #8e8e93; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: white; margin: 0; padding: 0; height: 100vh; overflow: hidden; user-select: none; }
+        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .captcha-box { background: var(--card); border: 1px solid #333; padding: 25px; border-radius: 24px; margin-top: 20px; }
+        .captcha-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .c-btn { font-size: 32px; background: #222; border: none; padding: 15px; border-radius: 15px; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 75px; background: rgba(22, 22, 24, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #333; z-index: 1000; padding-bottom: 20px; }
+        .nav-item { background: none; border: none; color: #555; font-size: 10px; font-weight: bold; }
         .nav-item.active { color: var(--accent); }
-
-        /* КОНТЕНТ */
+        .nav-icon { font-size: 24px; display: block; margin-bottom: 4px; }
         .page { display: none; height: 100vh; padding: 20px; box-sizing: border-box; overflow-y: auto; padding-bottom: 120px; }
-        .page.active { display: flex; flex-direction: column; align-items: center; }
-
-        /* ИГРА */
-        .balance-num { font-size: 50px; font-weight: 800; color: var(--gold); margin: 20px 0; }
-        .clicker-btn {
-            width: 220px; height: 220px;
-            background: radial-gradient(circle, #e67e22, #d35400);
-            border-radius: 50%; border: 8px solid #2c2c2e;
-            font-size: 90px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 40px rgba(230, 126, 34, 0.3);
-            margin: 30px 0;
-        }
-        .clicker-btn:active { transform: scale(0.95); }
-
-        /* ПРОФИЛЬ И КНОПКА ЧАТА */
-        .card { width: 100%; background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-sizing: border-box; }
-        .chat-btn {
-            background: #3498db; color: white; border: none; width: 100%;
-            padding: 15px; border-radius: 15px; font-weight: bold; font-size: 16px;
-            cursor: pointer; text-decoration: none; display: block; text-align: center;
-        }
-        .avatar { width: 80px; height: 80px; background: var(--accent); border-radius: 50%; margin: 0 auto 10px; font-size: 40px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--gold); overflow: hidden; }
+        .page.active { display: flex; flex-direction: column; }
+        .header-stats { text-align: center; margin-top: 30px; }
+        .balance { font-size: 48px; font-weight: 900; color: var(--gold); margin: 10px 0; }
+        .lvl-badge { background: var(--accent); padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        .click-area { flex-grow: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+        .main-bobr { width: 240px; height: 240px; background: radial-gradient(circle, #f39c12, #d35400); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 110px; border: 10px solid #222; box-shadow: 0 0 50px rgba(230,126,34,0.4); transition: transform 0.05s; overflow: hidden; }
+        .main-bobr img { width: 100%; height: 100%; object-fit: cover; }
+        .main-bobr:active { transform: scale(0.9); }
+        .shop-list { display: grid; gap: 12px; margin-top: 10px; margin-bottom: 20px; }
+        .item-card { background: var(--card); padding: 16px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .item-info h4 { margin: 0; font-size: 16px; }
+        .item-info p { margin: 4px 0 0; font-size: 12px; color: var(--text-sub); }
+        .buy-btn { background: var(--accent); border: none; color: white; padding: 10px 16px; border-radius: 12px; font-weight: bold; }
+        .prof-header { background: var(--card); border-radius: 24px; padding: 30px; text-align: center; border: 1px solid #333; }
+        .avatar { width: 150px; height: 150px; background: #333; border-radius: 50%; margin: 0 auto 15px; border: 3px solid var(--gold); overflow: hidden; display: flex; align-items: center; justify-content: center; }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .chat-link { background: #0088cc; color: white; text-decoration: none; width: 100%; display: block; padding: 18px; border-radius: 18px; font-weight: bold; margin-top: 20px; text-align: center; }
     </style>
 </head>
 <body>
-
     <div id="auth-screen">
-        <h1 style="color: var(--accent);">BOBR EMPIRE</h1>
-        <p>Добро пожаловать в семью!</p>
+        <h1 style="margin:0; font-size: 32px; letter-spacing: 2px;">BOBR EMPIRE</h1>
         <div class="captcha-box">
-            <div>Найди настоящего Бобра:</div>
-            <div class="captcha-btns">
-                <button class="captcha-btn" onclick="alert('Это кролик!')">🐰</button>
-                <button class="captcha-btn" onclick="login()">🦫</button>
-                <button class="captcha-btn" onclick="alert('Это котик!')">🐱</button>
+            <p style="margin:0; opacity:0.8;">Найди <b>Бревно</b>:</p>
+            <div class="captcha-grid">
+                <button class="c-btn" onclick="tg.HapticFeedback.notificationOccurred('error')">🍓</button>
+                <button class="c-btn" onclick="initGame()">🪵</button>
+                <button class="c-btn" onclick="tg.HapticFeedback.notificationOccurred('error')">🚀</button>
             </div>
         </div>
     </div>
 
-    <main id="game-page" class="page active">
-        <div id="u-name-header" style="opacity: 0.6; letter-spacing: 2px;">БОБЕР</div>
-        <div class="balance-num"><span id="balance">0</span></div>
-        
-        <div class="clicker-btn" onclick="mine()">🪵</div>
-        
-        <div class="card" style="display: flex; justify-content: space-around;">
-            <div>КЛИК: <b id="p-click">1</b></div>
-            <div>ОФФЛАЙН: <b id="p-auto">0</b></div>
+    <section id="game" class="page active">
+        <div class="header-stats">
+            <span class="lvl-badge" id="lvl-name">Зубастик (Ур. 1)</span>
+            <div class="balance" id="balance">0</div>
+            <div style="font-size: 12px; color: var(--text-sub);">ПРИБЫЛЬ: +<span id="income">0</span>/СЕК</div>
         </div>
-    </main>
-
-    <main id="profile-page" class="page">
-        <div class="card">
-            <div class="avatar" id="avatar">🦫</div>
-            <h2 id="full-name" style="margin: 5px 0;">Kambulyator</h2>
-            <div style="color: var(--gold); font-size: 14px;">СТАТУС: ЛЕГЕНДА</div>
+        <div class="click-area">
+            <div class="main-bobr" onclick="tap()" id="main-click-image">
+                </div>
         </div>
+    </section>
 
-        <div class="card">
-            <h3 style="margin-top:0;">СОЦИАЛЬНЫЕ СЕТИ</h3>
-            <a href="https://t.me/+fLattD_e5UdlNDUy" target="_blank" class="chat-btn">📢 ПЕРЕЙТИ В ЧАТ</a>
+    <section id="shop" class="page">
+        <h2 style="margin: 10px 0;">Инструменты</h2>
+        <div class="shop-list">
+            <div class="item-card"><div class="item-info"><h4>Острые зубы</h4><p>+1 к клику</p></div><button class="buy-btn" id="btn-click" onclick="buy('click')">100</button></div>
+            <div class="item-card"><div class="item-info"><h4>Бобер-помощник</h4><p>+2/сек пассивно</p></div><button class="buy-btn" id="btn-auto" onclick="buy('auto')">500</button></div>
         </div>
 
-        <div class="card">
-            <h4>ИНФО</h4>
-            <div style="font-size: 12px; color: #8e8e93;">
-                ID Аккаунта: <span id="u-id">---</span><br>
-                Версия: 2.0 Premium
-            </div>
+        <h2 style="margin: 10px 0;">Гардероб</h2>
+        <div class="shop-list">
+            <div class="item-card"><div class="item-info"><h4>Скин 1</h4><p>Новый стиль</p></div><button class="buy-btn" onclick="buySkin('E46A75D1-A858-4D23-A4FB-B1B082BCA575.png', 5000)">5000</button></div>
+            <div class="item-card"><div class="item-info"><h4>Скин 2</h4><p>Легенда</p></div><button class="buy-btn" onclick="buySkin('5A4EAF01-5CEA-4889-A27E-77FCA17201E3.png', 15000)">15000</button></div>
         </div>
-    </main>
+    </section>
 
-    <nav class="bottom-nav">
-        <button class="nav-item active" onclick="showPage('game-page', this)">ИГРА</button>
-        <button class="nav-item" onclick="showPage('profile-page', this)">ПРОФИЛЬ</button>
+    <section id="profile" class="page">
+        <div class="prof-header">
+            <div class="avatar" id="u-photo">
+                </div>
+            <h2 id="u-name" style="margin:0;">Бобер</h2>
+            <p id="u-status" style="color: var(--gold); font-weight: bold;">НОВИЧОК</p>
+        </div>
+        <a href="https://t.me/твой_чат" class="chat-link">📢 ВСТУПИТЬ В ЧАТ</a>
+        <div style="margin-top: 20px; opacity: 0.5; font-size: 11px; text-align: center;">ID: <span id="u-id">000000</span></div>
+    </section>
+
+    <nav class="nav-bar">
+        <button class="nav-item active" onclick="nav('game', this)"><span class="nav-icon">🪵</span>ИГРА</button>
+        <button class="nav-item" onclick="nav('shop', this)"><span class="nav-icon">🛒</span>МАГАЗИН</button>
+        <button class="nav-item" onclick="nav('profile', this)"><span class="nav-icon">👤</span>ПРОФИЛЬ</button>
     </nav>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
-
-        let state = JSON.parse(localStorage.getItem('bobr_v4_state')) || {
-            coins: 0, click: 1, auto: 0
+        let tg = window.Telegram.WebApp; tg.expand();
+        
+        let state = JSON.parse(localStorage.getItem('bobr_final_v2')) || { 
+            coins: 0, 
+            click: 1, 
+            auto: 0, 
+            cPrice: 100, 
+            aPrice: 500, 
+            lastDate: Date.now(),
+            currentSkin: 'CD7D4502-88A9-4FBC-9CEE-14E2B38D35E4.png',
+            inventory: ['CD7D4502-88A9-4FBC-9CEE-14E2B38D35E4.png']
         };
 
-        function login() {
-            document.getElementById('auth-screen').style.display = 'none';
+        function initGame() { 
+            document.getElementById('auth-screen').style.display = 'none'; 
+            tg.HapticFeedback.notificationOccurred('success'); 
+            let diff = Math.floor((Date.now() - state.lastDate) / 1000); 
+            if(diff > 10 && state.auto > 0) { 
+                let offCoins = Math.min(diff * state.auto, 50000); 
+                state.coins += offCoins; 
+                tg.showAlert(`Твои бобры нагрызли ${offCoins} 🦫!`); 
+            } 
+            update();
+        }
+
+        function nav(id, btn) { 
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+            btn.classList.add('active'); 
+            tg.HapticFeedback.selectionChanged(); 
+        }
+
+        function tap() { 
+            state.coins += state.click; 
+            tg.HapticFeedback.impactOccurred('medium'); 
+            update(); 
+        }
+
+        function buy(type) { 
+            if(type === 'click' && state.coins >= state.cPrice) { 
+                state.coins -= state.cPrice; state.click += 1; state.cPrice *= 2; 
+            } else if(type === 'auto' && state.coins >= state.aPrice) { 
+                state.coins -= state.aPrice; state.auto += 2; state.aPrice *= 2; 
+            } else { return; } 
+            tg.HapticFeedback.notificationOccurred('success'); 
+            update(); 
+        }
+
+        function buySkin(skinName, price) {
+            if (state.inventory.includes(skinName)) {
+                state.currentSkin = skinName;
+                tg.showAlert("Образ изменен!");
+            } else if (state.coins >= price) {
+                state.coins -= price;
+                state.inventory.push(skinName);
+                state.currentSkin = skinName;
+                tg.showAlert("Скин куплен и надет!");
+            } else {
+                tg.showAlert("Недостаточно 🦫!");
+            }
             tg.HapticFeedback.notificationOccurred('success');
+            update();
         }
 
-        function showPage(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
-            tg.HapticFeedback.selectionChanged();
+        function update() { 
+            document.getElementById('balance').innerText = Math.floor(state.coins).toLocaleString(); 
+            document.getElementById('income').innerText = state.auto; 
+            document.getElementById('btn-click').innerText = state.cPrice; 
+            document.getElementById('btn-auto').innerText = state.aPrice; 
+
+            // Обновление картинок бобра (в игре и в профиле)
+            const skinPath = `img/${state.currentSkin}`;
+            document.getElementById('main-click-image').innerHTML = `<img src="${skinPath}">`;
+            document.getElementById('u-photo').innerHTML = `<img src="${skinPath}">`;
+
+            if(tg.initDataUnsafe.user) { 
+                let u = tg.initDataUnsafe.user; 
+                document.getElementById('u-name').innerText = u.first_name; 
+                document.getElementById('u-id').innerText = u.id; 
+            } 
+            
+            let lvl = "Зубастик";
+            if(state.coins > 10000) lvl = "Лесоруб";
+            if(state.coins > 100000) lvl = "Директор Дамбы";
+            document.getElementById('lvl-name').innerText = lvl;
+            document.getElementById('u-status').innerText = lvl.toUpperCase();
+
+            state.lastDate = Date.now(); 
+            localStorage.setItem('bobr_final_v2', JSON.stringify(state)); 
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = Math.floor(state.coins).toLocaleString();
-            document.getElementById('p-click').innerText = state.click;
-            document.getElementById('p-auto').innerText = state.auto;
-
-            if (tg.initDataUnsafe.user) {
-                const u = tg.initDataUnsafe.user;
-                document.getElementById('u-name-header').innerText = u.first_name.toUpperCase();
-                document.getElementById('full-name').innerText = u.first_name + (u.last_name ? ' ' + u.last_name : '');
-                document.getElementById('u-id').innerText = u.id;
-                if(u.photo_url) document.getElementById('avatar').innerHTML = `<img src="${u.photo_url}">`;
-            }
-        }
-
-        function mine() {
-            state.coins += state.click;
-            updateUI();
-            save();
-            tg.HapticFeedback.impactOccurred('medium');
-        }
-
-        function save() { localStorage.setItem('bobr_v4_state', JSON.stringify(state)); }
-
-        // Эмуляция пассивного дохода
-        setInterval(() => {
-            if(state.auto > 0) {
-                state.coins += state.auto / 10;
-                updateUI();
-            }
-        }, 100);
-
-        updateUI();
+        setInterval(() => { state.coins += state.auto / 10; update(); }, 100);
+        update();
     </script>
 </body>
 </html>
