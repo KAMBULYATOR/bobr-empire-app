@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bobr Empire Premium</title>
+    <title>Bobr Empire Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -11,220 +11,244 @@
             --card: #1c1c1e;
             --accent: #e67e22;
             --gold: #f1c40f;
-            --green: #27ae60;
+            --text-main: #ffffff;
+            --text-sub: #8e8e93;
         }
         body {
-            font-family: 'SF Pro Display', -apple-system, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
-            color: white;
+            color: var(--text-main);
             margin: 0;
             padding: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
         }
-        .header {
-            width: 100%;
-            padding: 20px;
+
+        /* Навигация */
+        .nav-tabs {
+            display: flex;
             background: var(--card);
-            border-bottom: 2px solid #333;
-            text-align: center;
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            justify-content: space-around;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 20px;
+            border-radius: 10px;
+        }
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Контент */
+        .content-section {
+            display: none;
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            flex-direction: column;
+            align-items: center;
+        }
+        .content-section.active { display: flex; }
+
+        /* Профиль */
+        .profile-card {
+            width: 100%;
+            background: var(--card);
+            border-radius: 20px;
+            padding: 25px;
             box-sizing: border-box;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .balance-container {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--gold);
-            margin: 10px 0;
-            text-shadow: 0 0 20px rgba(241, 196, 15, 0.3);
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin: 0 auto 15px;
+            border: 4px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            overflow: hidden;
         }
-        .stats-grid {
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Достижения */
+        .achievements-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(4, 1fr);
             gap: 10px;
-            width: 90%;
+            width: 100%;
             margin-top: 15px;
         }
-        .stat-item {
+        .ach-item {
             background: #2c2c2e;
             padding: 10px;
             border-radius: 12px;
-            font-size: 12px;
-            color: #aaa;
+            font-size: 20px;
+            opacity: 0.3;
+            transition: 0.3s;
+            filter: grayscale(1);
         }
-        .stat-value { color: white; font-weight: bold; font-size: 16px; }
+        .ach-item.unlocked { opacity: 1; filter: grayscale(0); border: 1px solid var(--gold); }
 
-        .click-zone {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 0;
-        }
-        .bobr-btn {
-            width: 220px;
-            height: 220px;
+        /* Геймплейные элементы */
+        .balance-label { font-size: 40px; font-weight: 800; color: var(--gold); margin: 10px 0; }
+        .click-circle {
+            width: 200px;
+            height: 200px;
             background: radial-gradient(circle, #e67e22 0%, #d35400 100%);
             border-radius: 50%;
-            border: 8px solid #333;
-            font-size: 100px;
-            cursor: pointer;
-            box-shadow: 0 0 50px rgba(230, 126, 34, 0.2);
-            transition: transform 0.05s;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 80px;
+            border: 10px solid #333;
+            margin: 40px 0;
+            box-shadow: 0 0 30px rgba(230,126,34,0.3);
         }
-        .bobr-btn:active { transform: scale(0.92); }
+        .click-circle:active { transform: scale(0.95); }
 
-        .energy-bar {
-            width: 80%;
-            height: 12px;
-            background: #333;
-            border-radius: 6px;
-            margin-top: 20px;
-            overflow: hidden;
-        }
-        .energy-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #f1c40f, #e67e22);
-            width: 100%;
-            transition: width 0.3s;
-        }
-
-        .menu-grid {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            padding: 20px;
-            box-sizing: border-box;
-            background: var(--card);
-            border-radius: 30px 30px 0 0;
-        }
-        .menu-card {
-            background: #2c2c2e;
-            padding: 15px;
-            border-radius: 18px;
-            text-align: left;
-            border: 1px solid #3d3d3f;
-        }
-        .menu-card h4 { margin: 0; font-size: 14px; color: #888; }
-        .menu-card .price { font-size: 16px; color: var(--green); font-weight: bold; margin-top: 5px; }
-        
-        .promo-section {
-            width: 90%;
-            margin: 20px 0;
+        .promo-box {
             display: flex;
+            width: 100%;
             gap: 10px;
+            margin-bottom: 20px;
         }
-        .promo-input {
+        input {
             flex-grow: 1;
             background: #2c2c2e;
             border: 1px solid #444;
-            border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
+            border-radius: 12px;
             color: white;
         }
-        .promo-btn {
-            background: var(--accent);
-            border: none;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-weight: bold;
-        }
+        .btn-ok { background: var(--accent); border: none; padding: 0 20px; border-radius: 12px; color: white; font-weight: bold; }
+
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="player-name" style="font-size: 14px; opacity: 0.7;">БОБЕР-МАЙНЕР</div>
-        <div class="balance-container"><span id="balance">0</span> 🦫</div>
-        <div class="stats-grid">
-            <div class="stat-item">СИЛА ГРЫЗА<br><span class="stat-value" id="per-click">1</span></div>
-            <div class="stat-item">ПАССИВНЫЙ ДОХОД<br><span class="stat-value" id="per-sec">0</span>/сек</div>
-        </div>
-    </div>
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('game')">Главная</button>
+        <button class="tab-btn" onclick="showTab('profile')">Профиль</button>
+    </nav>
 
-    <div class="click-zone">
-        <button class="bobr-btn" onclick="mine()">🦫</button>
-        <div class="energy-bar"><div class="energy-fill" id="energy-fill"></div></div>
-        <p style="font-size: 12px; color: #666; margin-top: 10px;">ЭНЕРГИЯ: <span id="energy-text">1000/1000</span></p>
-    </div>
+    <section id="game" class="content-section active">
+        <div id="u-name-top" style="color: var(--text-sub); font-size: 14px;">БОБЕР</div>
+        <div class="balance-label"><span id="balance">0</span> 🦫</div>
+        
+        <div class="click-circle" onclick="mine()">🪵</div>
 
-    <div class="promo-section">
-        <input type="text" id="promo-input" class="promo-input" placeholder="Код из чата...">
-        <button class="promo-btn" onclick="checkPromo()">OK</button>
-    </div>
+        <div class="promo-box">
+            <input type="text" id="promo-input" placeholder="Код из чата...">
+            <button class="btn-ok" onclick="checkPromo()">OK</button>
+        </div>
 
-    <div class="menu-grid">
-        <div class="menu-card" onclick="upgrade('click')">
-            <h4>ОСТРЫЕ ЗУБЫ</h4>
-            <div class="price" id="click-price">100 🦫</div>
-            <div style="font-size: 10px; color: #666;">+1 к клику</div>
+        <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <button onclick="upgrade('click')" style="background:#2c2c2e; border:1px solid #444; color:white; padding:15px; border-radius:15px;">
+                Зубы (+1)<br><span id="c-price" style="color:var(--gold)">100</span>
+            </button>
+            <button onclick="upgrade('auto')" style="background:#2c2c2e; border:1px solid #444; color:white; padding:15px; border-radius:15px;">
+                Завод (+2/с)<br><span id="a-price" style="color:var(--gold)">500</span>
+            </button>
         </div>
-        <div class="menu-card" onclick="upgrade('auto')">
-            <h4>ЛЕСОПИЛКА</h4>
-            <div class="price" id="auto-price">500 🦫</div>
-            <div style="font-size: 10px; color: #666;">+2/сек пассивно</div>
+    </section>
+
+    <section id="profile" class="content-section">
+        <div class="profile-card">
+            <div class="profile-avatar" id="avatar-container">🦫</div>
+            <h2 id="p-full-name" style="margin: 0;">Имя Фамилия</h2>
+            <div id="p-role" style="color: var(--accent); font-weight: bold; margin-top: 5px;">Новичок</div>
         </div>
-    </div>
+
+        <div class="profile-card" style="text-align: left;">
+            <h4 style="margin: 0 0 10px 0;">ДОСТИЖЕНИЯ</h4>
+            <div class="achievements-grid">
+                <div class="ach-item" id="ach-1" title="Первые 1000">💰</div>
+                <div class="ach-item" id="ach-2" title="Богач">👑</div>
+                <div class="ach-item" id="ach-3" title="Работяга">⛏️</div>
+                <div class="ach-item" id="ach-4" title="Админский бро">🔥</div>
+            </div>
+        </div>
+
+        <div style="color: var(--text-sub); font-size: 12px; margin-top: 20px;">
+            ID: <span id="p-id">00000000</span>
+        </div>
+    </section>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Состояние игры
-        let state = JSON.parse(localStorage.getItem('bobr_pro_state')) || {
-            coins: 0,
-            clickPower: 1,
-            autoIncome: 0,
-            energy: 1000,
-            maxEnergy: 1000,
-            clickCost: 100,
-            autoCost: 500
+        let state = JSON.parse(localStorage.getItem('bobr_v3_state')) || {
+            coins: 0, clickPower: 1, autoIncome: 0,
+            clickCost: 100, autoCost: 500,
+            ach: [false, false, false, false]
         };
+
+        function showTab(tab) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
         function updateUI() {
             document.getElementById('balance').innerText = Math.floor(state.coins);
-            document.getElementById('per-click').innerText = state.clickPower;
-            document.getElementById('per-sec').innerText = state.autoIncome;
-            document.getElementById('energy-text').innerText = `${Math.floor(state.energy)}/${state.maxEnergy}`;
-            document.getElementById('energy-fill').style.width = (state.energy / state.maxEnergy * 100) + '%';
-            document.getElementById('click-price').innerText = `${state.clickCost} 🦫`;
-            document.getElementById('auto-price').innerText = `${state.autoCost} 🦫`;
+            document.getElementById('c-price').innerText = state.clickCost;
+            document.getElementById('a-price').innerText = state.autoCost;
             
-            if (tg.initDataUnsafe.user) {
-                document.getElementById('player-name').innerText = tg.initDataUnsafe.user.first_name.toUpperCase();
+            // Данные профиля
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                document.getElementById('u-name-top').innerText = user.first_name.toUpperCase();
+                document.getElementById('p-full-name').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+                document.getElementById('p-id').innerText = user.id;
+                
+                if (user.photo_url) {
+                    document.getElementById('avatar-container').innerHTML = `<img src="${user.photo_url}">`;
+                }
             }
+
+            // Проверка достижений
+            if (state.coins >= 1000) state.ach[0] = true;
+            if (state.coins >= 10000) state.ach[1] = true;
+            if (state.clickPower >= 10) state.ach[2] = true;
+
+            state.ach.forEach((isUnlocked, i) => {
+                if(isUnlocked) document.getElementById(`ach-${i+1}`).classList.add('unlocked');
+            });
+
+            document.getElementById('p-role').innerText = state.coins > 5000 ? "МАСТЕР ПЛОТИН" : "НОВИЧОК";
         }
 
         function mine() {
-            if (state.energy >= 1) {
-                state.coins += state.clickPower;
-                state.energy -= 1;
-                save();
-                updateUI();
-                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            } else {
-                tg.showAlert("Бобер устал! Нужен отдых.");
-            }
+            state.coins += state.clickPower;
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            save();
+            updateUI();
         }
 
         function upgrade(type) {
             if (type === 'click' && state.coins >= state.clickCost) {
                 state.coins -= state.clickCost;
-                state.clickPower += 1;
-                state.clickCost = Math.floor(state.clickCost * 1.5);
-                tg.showAlert("Зубы стали острее!");
+                state.clickPower++;
+                state.clickCost = Math.floor(state.clickCost * 1.6);
             } else if (type === 'auto' && state.coins >= state.autoCost) {
                 state.coins -= state.autoCost;
                 state.autoIncome += 2;
-                state.autoCost = Math.floor(state.autoCost * 1.6);
-                tg.showAlert("Лесопилка запущена!");
+                state.autoCost = Math.floor(state.autoCost * 1.7);
             }
             save();
             updateUI();
@@ -234,26 +258,21 @@
             const code = document.getElementById('promo-input').value.toUpperCase();
             if (code === 'KAMBULYATOR') {
                 state.coins += 5000;
-                tg.showAlert("👑 Спец-код принят! +5000 🦫");
-                document.getElementById('promo-input').value = '';
-            } else if (code === 'BOBR') {
-                state.coins += 1000;
-                tg.showAlert("Грызь! +1000 монет");
-                document.getElementById('promo-input').value = '';
+                state.ach[3] = true;
+                tg.showAlert("Код активирован!");
             }
+            document.getElementById('promo-input').value = '';
             save();
             updateUI();
         }
 
-        function save() {
-            localStorage.setItem('bobr_pro_state', JSON.stringify(state));
-        }
+        function save() { localStorage.setItem('bobr_v3_state', JSON.stringify(state)); }
 
-        // Пассивный доход и регенерация энергии
         setInterval(() => {
-            state.coins += state.autoIncome / 10;
-            if (state.energy < state.maxEnergy) state.energy += 0.5;
-            updateUI();
+            if(state.autoIncome > 0) {
+                state.coins += state.autoIncome / 10;
+                updateUI();
+            }
         }, 100);
 
         updateUI();
